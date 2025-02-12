@@ -1,0 +1,42 @@
+name: Test the dependencies scan action
+
+on:
+  pull_request:
+    branches:
+      - master
+  push:
+    paths:
+      - scan-dependencies/**
+      - .github/workflows/test-login.yml
+
+env:
+  MEND_URL: ${{ secrets.MEND_URL }}
+  MEND_ORGANIZATION: ${{ secrets.MEND_ORGANIZATION }}
+  MEND_ORGANIZATION_KEY: ${{ secrets.MEND_ORGANIZATION_KEY }}
+  MEND_USER_KEY: ${{ secrets.MEND_USER_KEY }}
+  MEND_EMAIL: ${{ secrets.MEND_EMAIL }}
+
+jobs:
+  test-scan:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Mend CLI
+        uses: ./setup
+
+      - name: Login into Mend.io
+        uses: ./login
+
+      - name: Perform scan
+        uses: ./scan-dependencies
+        with:
+          scope: "*//CTNR - FORME/webgoat-maven"
+
+      - name: Debug
+        run: |
+          ls -al
+          tree
+

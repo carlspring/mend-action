@@ -1,4 +1,4 @@
-name: Test the scan action
+name: Test the Docker scan action
 
 on:
   pull_request:
@@ -6,7 +6,7 @@ on:
       - master
   push:
     paths:
-      - scan/**
+      - scan-docker/**
       - .github/workflows/test-login.yml
 
 env:
@@ -37,12 +37,11 @@ jobs:
       - name: Login into Mend.io
         uses: ./login
 
-      - name: Perform scan
-        uses: ./scan
+      - name: Perform container scan
+        uses: ./scan-docker
         with:
           docker-image: vulnerable-image:latest
           scope: "*//CTNR - FORME//vulnerable-image"
-
 
       - name: Debug
         run: |
